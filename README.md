@@ -1,6 +1,6 @@
 # StrokeWeaver Agent
 
-**Evidence-first, auditable research workflows for stroke-imaging software.**
+**Evidence-first, auditable research workflows for stroke-imaging software (https://strokeweaver-agent.streamlit.app/).**
 
 [中文说明](README.zh-CN.md) · [Architecture](docs/ARCHITECTURE.md) · [Deployment](docs/DEPLOYMENT.md) · [Reproducibility](docs/REPRODUCIBILITY.md)
 
@@ -10,8 +10,6 @@
 
 ![Actual generated-only StrokeWeaver Agent workbench, user-supplied capture](docs/assets/workbench-screenshot.png)
 
-*Actual local application view supplied by the operator on 5 November 2026, reproduced without image modification. It shows fixed generated voxels, not a patient MRI or neural segmentation. This single view is not a complete visual or clinical acceptance test.*
-
 ## What this release is
 
 StrokeWeaver Agent is a runnable **generated-only research prototype** for evidence applicability, bounded technical repair, provenance and fair policy comparison.
@@ -19,7 +17,6 @@ It performs actual computation on small self-generated inputs rather than presen
 Its public interface does not accept patient files, model checkpoints, external URLs or shell commands.
 
 The repository is [shumao469/StrokeWeaver-Agent](https://github.com/shumao469/StrokeWeaver-Agent).
-A hosted Streamlit application has **not yet been verified as deployed**; no live-app URL is claimed here.
 
 ### One system, three names
 
@@ -56,9 +53,6 @@ cd StrokeWeaver-Agent
 python run.py --help
 python run.py demo --fixture centimeter_encoded
 ```
-
-The command prints an actual generated audit to standard output.
-It does not write into a private workspace or read an input image path.
 
 ### Optional isolated environment
 
@@ -242,8 +236,6 @@ Test counts are software checks, not clinical sample sizes.
 See [Reproducibility](docs/REPRODUCIBILITY.md) for scope, fixtures, comparisons and the historical C3 correction.
 
 `legacy/source_index.json` describes the curated owned implementation and adaptations.
-Historical source is not a second active app or authority to rerun private experiments.
-Old patient files, protected CAL/HOLD statistics, correspondence, credentials, external weights and private daemons are intentionally excluded.
 
 ## Deployment and release status
 
@@ -264,8 +256,7 @@ That claim requires separate independent evidence; publication quality is not ce
 
 ## License and third-party materials
 
-The owner has not yet selected a distribution/reuse license for this repository.
-Do not infer MIT, Apache-2.0 or an upstream data license from public source visibility or dependency installation.
+Fudan University, ISTBI, Xu lab (shumaoxu@fudan.edu.cn)
 Third-party software, model and dataset terms remain separate; no clinical-use authorization is supplied here.
 
 For a bug report, include the commit, Python version, generated fixture/command and a minimal generated-only reproduction.

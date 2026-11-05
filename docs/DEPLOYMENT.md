@@ -1,6 +1,6 @@
 # Deployment
 
-This guide deploys the **generated-only public application**, not the historical private monitors or a clinical inference service. Deployment status remains pending until the owner has completed and verified it. A repository URL is not a live application URL.
+This guide deploys the **generated-only public application**. Deployment status remains pending until the owner has completed and verified it. 
 
 ## Local setup
 
@@ -16,8 +16,6 @@ python -m streamlit run streamlit_app.py --server.address 127.0.0.1 --server.por
 Linux/macOS activation: `source .venv/bin/activate`.
 Windows PowerShell activation: `.venv\Scripts\Activate.ps1`.
 If activation is unavailable, invoke the environment's Python directly; do not alter a shared research environment or global execution policy to run the demo.
-
-Visit `http://127.0.0.1:8810/` on the same machine. Do not bind to a public interface merely to work around a browser connection problem. The public demo is independent of legacy local services and does not resume or terminate their processes.
 
 ## Streamlit Community Cloud
 
@@ -35,11 +33,11 @@ The repository owner performs the account and deployment steps:
 The official deployment workflow selects repository/branch/entrypoint and allows Python-version configuration. See [Streamlit deployment documentation](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy).
 Place the requirements file at the root or app entrypoint directory, as described in [Streamlit dependency documentation](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies).
 
-No application secret, patient access key, clinical endpoint or model account is required. **Do not paste dataset decryption keys, tokens, patient data or private paths into cloud settings or repository files.** This release performs only fixed generated tasks. Hosting does not provide permission for additional data or models.
+ **Do not paste dataset decryption keys, tokens, patient data or private paths into cloud settings or repository files.** This release performs only fixed generated tasks. Hosting does not provide permission for additional data or models.
 
-## Acceptance checklist
+## StrokeWeaver Agent checklist
 
-- The title identifies StrokeWeaver Agent; TACTIC is labelled the internal controller.
+- TACTIC is labelled the internal controller.
 - Generated-only and no-clinical-use boundaries are visible.
 - Native workflow runs the registered fixture, displays the correct selected/stored result identity, and exports JSON/HTML/ZIP.
 - Generated phantom slices are labelled as binary generated voxels, never MRI/model output.

@@ -1,0 +1,34 @@
+# Generated local environments, caches and build products.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+outputs/
+reports/
+.DS_Store
+Thumbs.db
+# This repository is generated-only. Never add credentials or medical payloads.
+.env
+.env.*
+.streamlit/secrets.toml
+*.pem
+*.key
+*.nii
+*.nii.gz
+*.dcm
+*.ima
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.h5
+*.hdf5
+*.7z
+*.zip
+*.tar
+*.gz

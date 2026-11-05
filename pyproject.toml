@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "strokeweaver-agent"
+version = "0.1.0"
+description = "Generated-only, auditable stroke-imaging research workflow prototype"
+requires-python = ">=3.10"
+readme = "README.md"
+dependencies = []
+
+[project.optional-dependencies]
+demo = ["streamlit==1.55.0"]
+
+[project.scripts]
+strokeweaver = "strokeweaver_agent.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+strokeweaver_agent = ["tool_registry.json"]
+

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="390" viewBox="0 0 1200 390" role="img" aria-labelledby="title desc">
+<title id="title">StrokeWeaver Agent system overview</title><desc id="desc">An original schematic of a generated-input research agent. TACTIC is its controller, not a second parallel tool layer. Red vessels are schematic. Patient execution remains disabled.</desc>
+<rect width="1200" height="390" fill="#fff"/><g font-family="Arial,sans-serif" fill="#252A30">
+<text x="35" y="55" font-size="31" font-weight="700">StrokeWeaver Agent</text><text x="35" y="84" font-size="16" fill="#64717D">Auditable imaging research workflows with applicability-aware conditional repair</text>
+<path d="M168 134C123 108 73 137 77 179C44 204 57 245 78 254C75 301 130 324 167 291ZM180 134C225 108 275 137 271 179C304 204 291 245 270 254C273 301 218 324 181 291Z" fill="#E9E8ED" stroke="#AAA8B4" stroke-width="2"/>
+<g fill="none" stroke="#B83B50" stroke-width="5" stroke-linecap="round"><path d="M175 326V236V170M175 242Q131 227 103 187M141 230Q114 251 91 244M142 228Q146 187 132 161M175 242Q219 227 246 187M209 230Q235 250 258 243M208 228Q206 186 221 160M175 178L163 145M175 178L188 144"/></g>
+<text x="73" y="358" font-size="14" fill="#64717D">Schematic vessels in red</text>
+<g stroke-width="1.5"><rect x="355" y="139" width="228" height="76" fill="#EDF4F8" stroke="#287EAB"/><rect x="650" y="139" width="228" height="76" fill="#EDF4F8" stroke="#287EAB"/><rect x="944" y="139" width="220" height="76" fill="#EDF6F2" stroke="#4D927B"/></g>
+<g font-size="19" text-anchor="middle"><text x="469" y="169">Typed input contract</text><text x="469" y="193" font-size="15">Modality, units, geometry, role</text><text x="764" y="169">TACTIC controller</text><text x="764" y="193" font-size="15">Evidence state and legal actions</text><text x="1054" y="169">Audit and report</text><text x="1054" y="193" font-size="15">Output, provenance, cost, failures</text></g>
+<g fill="none" stroke="#287EAB" stroke-width="2"><path d="M292 177H355M583 177H650M878 177H944M764 215V271H469V215"/></g>
+<text x="616" y="299" font-size="16" text-anchor="middle" fill="#C58F24">Retained observations can inform the next permitted action</text>
+<text x="355" y="355" font-size="15" fill="#64717D">Generated-only public demo. No patient uploads, model weights or clinical treatment advice.</text>
+</g></svg>

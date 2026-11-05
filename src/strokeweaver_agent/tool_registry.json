@@ -1,0 +1,19 @@
+{
+  "schema": "strokeweave-deepisles-input-registry-v1",
+  "tool": "DeepISLES (external, disabled)",
+  "upstream_repository": "https://github.com/ezequieldlrosa/DeepIsles",
+  "upstream_commit": "7658b608fc0d890cf14448ff3e58c47ad5c761e7",
+  "inference_dispatch_allowed": false,
+  "patient_admission": false,
+  "external_runtime_bundled": false,
+  "weights_bundled": false,
+  "license_or_runtime_admission_inferred": false,
+  "modes": {
+    "full_ensemble": {"required_modalities": ["DWI", "ADC", "FLAIR"], "teams": ["SEALS", "NVAUTO", "FACTORIZER"], "this_adapter_inference_qualified": false},
+    "SEALS_component": {"required_modalities": ["DWI", "ADC"], "teams": ["SEALS"], "this_adapter_inference_qualified": false}
+  },
+  "training_exposure": {"ISLES22_exposed": true, "unseen_tool_on_ISLES_claim_allowed": false, "new_model_architecture": false},
+  "license_note": "DeepISLES is a separately licensed external project. Review its source, checkpoint and dependency terms before an independently authorized integration. No upstream runtime, checkpoint or clinical-use permission is provided by this demo.",
+  "upstream_input_caution": "The pinned upstream implementation can replace ADC affine on mismatch. This generated guard rejects inconsistent grids; matching headers still do not prove registration.",
+  "limits": ["Generated 4x3x2 strict-subset NIfTI only; not actual neural inference or a general clinical reader.", "No patient tasks, new training, model weights, arbitrary input paths or clinical decisions.", "Same-grid metadata is not proof of biological registration, effective brain coverage or lesion accuracy.", "DWI/ADC declarations and all intensity values are synthetic; clinical ADC units are not established."]
+}

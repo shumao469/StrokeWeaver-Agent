@@ -1,0 +1,14 @@
+{
+  "schema": "strokeweaver-curated-owned-source-index-v1",
+  "historical_system_alias": "StrokeWeave",
+  "current_system_name": "StrokeWeaver Agent",
+  "TACTIC_role": "Internal controller, not an unrelated parallel imaging model",
+  "included": [{"file": "generated_repair_core_20261105.py", "origin": "Project-owned generated multistep-repair core, 2026-11-05", "original_filename": "controller_core.py", "sha256": "830cba6d0937184c8b24d318323f2f20479914145a7d2f2233b971ab5632d244", "role": "Byte-exact historical implementation; no patient data, checkpoints or external paths"}],
+  "adaptations": [
+    {"file": "../src/strokeweaver_agent/controller.py", "change": "Package docstring and internal-controller naming; original generated mechanism and tie-preserving task family retained"},
+    {"file": "../src/strokeweaver_agent/nifti_guard.py", "origin_source_sha256": "d81b05d3119c6b3704934e9edebcb5990a5ed2e5d7bb1343de8235d8133006ed", "change": "Retains owned binary/geometry/provenance logic; removes private filesystem/runtime pins and replaces registry with portable disabled external-tool metadata"},
+    {"file": "../src/strokeweaver_agent/routing.py", "origin_source_sha256": "443eb6c33bff8ffd8c5a65e5ec65571842d4434db52032a558642d5b7571645e", "change": "Restricted generated-task preview adapted conceptually from the earlier local MVP; no clinical or arbitrary tool execution"}
+  ],
+  "intentionally_excluded": ["patient images and masks", "training/test targets or rosters", "protected CAL/HOLD statistics", "model checkpoints and third-party inference code", "private filesystem/environment bindings", "credentials and correspondence", "legacy daemons and unrelated processes"],
+  "boundaries": "This source index is software provenance, not a new scientific validation or patient-admission certificate. Historical code is not a second active app."
+}

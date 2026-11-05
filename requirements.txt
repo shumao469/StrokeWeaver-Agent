@@ -1,0 +1,3 @@
+# Streamlit demo only. The portable research core uses the Python standard library.
+streamlit==1.55.0
+

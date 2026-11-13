@@ -1,4 +1,4 @@
-# StrokeWeaver 2.0 · Evidence Workbench
+# StrokeWeaver 2.0 
 
 [中文说明](README.zh-CN.md) · [StrokeWeaver 1.0](../StrokeWeaver-1.0/) · [Licensing status](../LICENSE_STATUS.md)
 

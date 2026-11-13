@@ -2,6 +2,8 @@
 
 This generated-only demonstration has no upload endpoint, arbitrary file path, shell command, external model dispatch, remote LLM call, patient task, training routine or clinical decision interface. Natural-language-like task previews are a small deterministic router, not an LLM and not an authorization mechanism.
 
+StrokeWeaver 2.0 publicly replays one independently audited generated-data qualification. The local MCP stdio process exposes only two read-only summary queries. The public workbench displays a recorded pending referral. Model execution and operator identity are outside its public interface.
+
 Do not attach patient information, access tokens, passwords, personal decryption keys or model checkpoints to issues, pull requests or public deployment secrets for this demo. The app requires no secrets. Do not expose a private research directory as its working directory or add external data mounts.
 
 Technical STOP means a declared software check completed. REFER means an unresolved technical case needs review. Neither is a diagnosis, treatment recommendation or safety certification. Passing a format or geometry check does not prove registration, effective brain coverage or segmentation accuracy.

@@ -1,10 +1,7 @@
-"""Run from a checkout without installing the package: python run.py --help."""
+"""Compatibility entrypoint for the StrokeWeaver 1.0 CLI."""
 from pathlib import Path
-import sys
+from runpy import run_path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
-from strokeweaver_agent.cli import main
 
 if __name__ == "__main__":
-    raise SystemExit(main())
-
+    run_path(str(Path(__file__).resolve().parent / "StrokeWeaver-1.0" / "run.py"), run_name="__main__")

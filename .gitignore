@@ -10,6 +10,7 @@ dist/
 build/
 outputs/
 reports/
+operator_actions/
 .DS_Store
 Thumbs.db
 # This repository is generated-only. Never add credentials or medical payloads.

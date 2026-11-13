@@ -1,0 +1,27 @@
+{
+  "schema": "strokeweaver-generated-closed-loop-protocol-v1",
+  "scope": "generated_nonpatient",
+  "task_goal": "Verify a generated TRACE and ADC pair, produce and read back native-grid coarse scores, and report the verified result or route for technical review",
+  "scenarios": ["normal", "stale", "recovery"],
+  "modality_contract": "TRACE is the generated diffusion-weighted input mapped to TaskSpec DWI, paired with ADC; no FLAIR is requested",
+  "worker": "fresh frozen V9.1 TinyUNet CPU forward in owned WSL process; 2 torch threads; no new fit",
+  "llm": "isolated Ollama llama3.2:3b CPU; one get_task_status tool call; max two native chat requests; allowlisted generated counts/grid facts only",
+  "expected": {
+    "normal": "STOP after live tool return and evidence check",
+    "stale": "REFER with pending technical review, zero LLM dispatch; invalidate one durable observation through a synthetic context revision",
+    "recovery": "STOP after actual SIGKILL at durable worker commit, exact source/worker/artifact recheck and one fresh local LLM session; one overall forward and one charge"
+  },
+  "budget": {"max_calls": 3, "max_attempts_per_operation": 2, "max_wall_seconds": 120.0},
+  "risk_binding": {
+    "file": "soop_execution_20261111_v1/shared_coarse_ablation_20261112_v1/PAIRED_PROTOCOL_v1.json",
+    "sha256": "0e04dd2f033c23aeb3de43b12bddb23cd582b7123cca2451e69ba9e102924128",
+    "shared_strong_gate_unchanged": true,
+    "complete_finite_voi_unchanged": true,
+    "scope_note": "Existing analytic risk/strategy conditions are preserved. These functional paths do not estimate or recalibrate policy risk."
+  },
+  "protected_labels_sealed": true,
+  "patient_execution": false,
+  "formal_comparison": false,
+  "training": false,
+  "mcp_gate": "PASS from independent auditor bound to exact summary bytes before local read-only adapter can start"
+}

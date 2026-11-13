@@ -2,3 +2,6 @@
 *.png binary
 *.jpg binary
 *.jpeg binary
+# Preserve the original byte-level evidence commitments across checkouts.
+StrokeWeaver-2.0/protocol.json -text
+StrokeWeaver-2.0/runs/** -text

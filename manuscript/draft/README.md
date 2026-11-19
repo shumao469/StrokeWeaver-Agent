@@ -1,10 +1,9 @@
 # StrokeWeaver manuscript draft
 
-This directory contains the research manuscript draft, supplementary information and editable figure deck associated with StrokeWeaver. These are draft materials for scientific discussion and author review. The executable 1.0 and 2.0 software demonstrations continue to operate on generated inputs and recorded generated-input traces, as described in their separate documentation.
+This directory contains the supplementary information and editable figure deck associated with StrokeWeaver. These are draft materials for scientific discussion and author review. The executable 1.0 and 2.0 software demonstrations continue to operate on generated inputs and recorded generated-input traces, as described in their separate documentation.
 
 | File | Content |
 | --- | --- |
-| [StrokeWeaver_Article.docx](StrokeWeaver_Article.docx) | Editable manuscript with figure legends |
 | [StrokeWeaver_Supplementary.docx](StrokeWeaver_Supplementary.docx) | Editable supplementary methods and tables |
 | [StrokeWeaver_Figures_editable.pptx](StrokeWeaver_Figures_editable.pptx) | Editable portrait figures, including extended data and supplementary figures |
 

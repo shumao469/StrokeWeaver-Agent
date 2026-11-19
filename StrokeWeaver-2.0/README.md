@@ -1,6 +1,6 @@
 # StrokeWeaver 2.0 
 
-[中文说明](README.zh-CN.md) · [StrokeWeaver 1.0](../StrokeWeaver-1.0/) · [Licensing status](../LICENSE_STATUS.md)
+[中文说明](README.zh-CN.md) · [StrokeWeaver 1.0](../StrokeWeaver-1.0/) · [Licensing status](../LICENSE_STATUS.md) · [Study reproducibility and evidence scope](REPRODUCIBILITY.md)
 
 Explore the audited execution of three fixed generated MRI scenarios. The original local qualification linked a `TaskSpec`, a fresh frozen TinyUNet CPU forward, native-grid artifact verification, an isolated local Llama tool exchange, and technical completion or human referral. This distribution replays the original receipts, validates their hashes, and serves two read-only MCP queries. The original model runtime and weights are kept separately.
 

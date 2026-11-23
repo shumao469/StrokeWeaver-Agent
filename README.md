@@ -33,4 +33,4 @@ Use repository `shumao469/StrokeWeaver-Agent`, branch `main`, and main file `str
 
 The versioned directories retain their standalone commands and verification instructions. See [StrokeWeaver 1.0](StrokeWeaver-1.0/README.md), [StrokeWeaver 2.0](StrokeWeaver-2.0/README.md), and [StrokeWeaver 3.0](StrokeWeaver-3.0/README.md) for details.
 
-The public software uses generated inputs and recorded technical outcomes. The separate [supplementary information and editable figures](manuscript/draft/) include a de-identified public SOOP image example and published DeepISLES figure crops with source and license information. The workbench runs generated inputs only.
+The public workbench uses generated inputs and recorded technical outcomes.

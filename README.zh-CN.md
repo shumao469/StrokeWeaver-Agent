@@ -1,8 +1,25 @@
 # StrokeWeaver Agent
 
-StrokeWeaver 面向卒中影像科研，两个开发阶段在同一仓库并列维护。
+StrokeWeaver 是面向卒中影像科研的工作台。两个版本的演示共用一个 Streamlit 入口，可在侧栏切换。
 
-- **[StrokeWeaver 1.0](StrokeWeaver-1.0/README.zh-CN.md)** 提供生成输入的可执行演示，包括原生空间核验、条件修复、共享策略对照和审计导出。
-- **[StrokeWeaver 2.0](StrokeWeaver-2.0/README.zh-CN.md)** 提供证据工作台与本地只读 MCP，可回放真实影像工具和本地模型对生成输入执行的三条技术轨迹，包括正常完成、证据失效转交和中断恢复。
+- **Run a generated workflow** 运行固定合成输入的原生空间核验、条件修复和共享策略对照，检查 NIfTI 输入契约并导出审计。
+- **Replay audited evidence** 回放正常完成、证据失效转交及中断恢复三条已审计轨迹，查看分阶段耗时、人工转交和 MCP 核验记录，下载证据报告。
 
-[原有 Streamlit 网页](https://strokeweaver-agent.streamlit.app/)继续使用 1.0 的根目录兼容入口。2.0 的本地启动及核验命令见对应说明。公开仓库仅提供生成输入演示和技术验证记录。 [许可说明](LICENSE_STATUS.md) · [安全与研究范围](SECURITY.md)
+[打开线上工作台](https://strokeweaver-agent.streamlit.app/) · [许可说明](LICENSE_STATUS.md) · [安全与研究范围](SECURITY.md)
+
+## 本地运行
+
+在仓库根目录使用 Python 3.11 或更新版本。
+
+```shell
+python -m pip install -r requirements.txt
+python -m streamlit run streamlit_app.py --server.address 127.0.0.1
+```
+
+打开 `http://127.0.0.1:8501/`。运行视图执行新的合成技术检查，回放视图校验并展示归档凭证。
+
+## 部署到 Streamlit Community Cloud
+
+仓库填 `shumao469/StrokeWeaver-Agent`，分支填 `main`，入口文件填 `streamlit_app.py`。依赖由根目录的 `requirements.txt` 提供，公开演示所需输入和凭证均随仓库提供。
+
+[1.0 独立运行与说明](StrokeWeaver-1.0/README.zh-CN.md) · [2.0 独立运行与说明](StrokeWeaver-2.0/README.zh-CN.md)

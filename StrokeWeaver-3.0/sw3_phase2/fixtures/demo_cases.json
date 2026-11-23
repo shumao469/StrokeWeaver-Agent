@@ -1,0 +1,302 @@
+[
+  {
+    "case_id": "SYN-DEMO-01",
+    "title": "Imaging report updated",
+    "as_of": "2026-01-01T12:00:00Z",
+    "required_kinds": [
+      "imaging",
+      "medications",
+      "rehab",
+      "follow_up"
+    ],
+    "handoff_confirmed": true,
+    "records": [
+      {
+        "id": "SYN-DEMO-01-imaging-1",
+        "kind": "imaging",
+        "version": 1,
+        "recorded_at": "2026-01-01T09:00:00Z",
+        "text": "The imaging report for this encounter is archived. Its date and version can be recorded during handoff.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-01-medications-1",
+        "kind": "medications",
+        "version": 1,
+        "recorded_at": "2026-01-01T09:00:00Z",
+        "text": "The discharge list is archived and is linked to the medication reconciliation record for this encounter.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-01-rehab-1",
+        "kind": "rehab",
+        "version": 1,
+        "recorded_at": "2026-01-01T09:00:00Z",
+        "text": "The handoff team has recorded the rehabilitation plan for review.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-01-follow_up-1",
+        "kind": "follow_up",
+        "version": 1,
+        "recorded_at": "2026-01-01T09:00:00Z",
+        "text": "The first follow-up has been recorded. The scheduling team will confirm the appointment time.",
+        "supersedes": null
+      }
+    ],
+    "update": {
+      "id": "SYN-DEMO-01-imaging-2",
+      "kind": "imaging",
+      "version": 2,
+      "recorded_at": "2026-01-01T13:00:00Z",
+      "text": "The imaging department issued a replacement report with a corrected examination date. The handoff reference requires review.",
+      "supersedes": "SYN-DEMO-01-imaging-1"
+    }
+  },
+  {
+    "case_id": "SYN-DEMO-02",
+    "title": "First follow-up plan missing",
+    "as_of": "2026-01-02T12:00:00Z",
+    "required_kinds": [
+      "imaging",
+      "medications",
+      "rehab",
+      "follow_up"
+    ],
+    "handoff_confirmed": true,
+    "records": [
+      {
+        "id": "SYN-DEMO-02-imaging-1",
+        "kind": "imaging",
+        "version": 1,
+        "recorded_at": "2026-01-02T09:00:00Z",
+        "text": "The imaging report for this encounter is archived. Its date and version can be recorded during handoff.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-02-medications-1",
+        "kind": "medications",
+        "version": 1,
+        "recorded_at": "2026-01-02T09:00:00Z",
+        "text": "The discharge list is archived and is linked to the medication reconciliation record for this encounter.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-02-rehab-1",
+        "kind": "rehab",
+        "version": 1,
+        "recorded_at": "2026-01-02T09:00:00Z",
+        "text": "The handoff team has recorded the rehabilitation plan for review.",
+        "supersedes": null
+      }
+    ],
+    "update": {
+      "id": "SYN-DEMO-02-follow_up-1",
+      "kind": "follow_up",
+      "version": 1,
+      "recorded_at": "2026-01-02T13:00:00Z",
+      "text": "The scheduling team added the first follow-up. Its time and responsible contact can now be checked.",
+      "supersedes": null
+    }
+  },
+  {
+    "case_id": "SYN-DEMO-03",
+    "title": "Conflicting discharge lists",
+    "as_of": "2026-01-03T12:00:00Z",
+    "required_kinds": [
+      "imaging",
+      "medications",
+      "rehab",
+      "follow_up"
+    ],
+    "handoff_confirmed": true,
+    "records": [
+      {
+        "id": "SYN-DEMO-03-imaging-1",
+        "kind": "imaging",
+        "version": 1,
+        "recorded_at": "2026-01-03T09:00:00Z",
+        "text": "The imaging report for this encounter is archived. Its date and version can be recorded during handoff.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-03-medications-1",
+        "kind": "medications",
+        "version": 1,
+        "recorded_at": "2026-01-03T09:00:00Z",
+        "text": "The discharge list is archived and is linked to the medication reconciliation record for this encounter.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-03-rehab-1",
+        "kind": "rehab",
+        "version": 1,
+        "recorded_at": "2026-01-03T09:00:00Z",
+        "text": "The handoff team has recorded the rehabilitation plan for review.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-03-follow_up-1",
+        "kind": "follow_up",
+        "version": 1,
+        "recorded_at": "2026-01-03T09:00:00Z",
+        "text": "The first follow-up has been recorded. The scheduling team will confirm the appointment time.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-03-medications-1-B",
+        "kind": "medications",
+        "version": 1,
+        "recorded_at": "2026-01-03T10:00:00Z",
+        "text": "Another team submitted a different discharge list, pending clinician review.",
+        "supersedes": null
+      }
+    ]
+  },
+  {
+    "case_id": "SYN-DEMO-04",
+    "title": "Handoff awaiting confirmation",
+    "as_of": "2026-01-04T12:00:00Z",
+    "required_kinds": [
+      "imaging",
+      "medications",
+      "rehab",
+      "follow_up"
+    ],
+    "handoff_confirmed": false,
+    "records": [
+      {
+        "id": "SYN-DEMO-04-imaging-1",
+        "kind": "imaging",
+        "version": 1,
+        "recorded_at": "2026-01-04T09:00:00Z",
+        "text": "The imaging report for this encounter is archived. Its date and version can be recorded during handoff.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-04-medications-1",
+        "kind": "medications",
+        "version": 1,
+        "recorded_at": "2026-01-04T09:00:00Z",
+        "text": "The discharge list is archived and is linked to the medication reconciliation record for this encounter.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-04-rehab-1",
+        "kind": "rehab",
+        "version": 1,
+        "recorded_at": "2026-01-04T09:00:00Z",
+        "text": "The handoff team has recorded the rehabilitation plan for review.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-04-follow_up-1",
+        "kind": "follow_up",
+        "version": 1,
+        "recorded_at": "2026-01-04T09:00:00Z",
+        "text": "The first follow-up has been recorded. The scheduling team will confirm the appointment time.",
+        "supersedes": null
+      }
+    ]
+  },
+  {
+    "case_id": "SYN-DEMO-05",
+    "title": "Complete records and confirmed handoff",
+    "as_of": "2026-01-05T12:00:00Z",
+    "required_kinds": [
+      "imaging",
+      "medications",
+      "rehab",
+      "follow_up"
+    ],
+    "handoff_confirmed": true,
+    "records": [
+      {
+        "id": "SYN-DEMO-05-imaging-1",
+        "kind": "imaging",
+        "version": 1,
+        "recorded_at": "2026-01-05T09:00:00Z",
+        "text": "The imaging report for this encounter is archived. Its date and version can be recorded during handoff.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-05-medications-1",
+        "kind": "medications",
+        "version": 1,
+        "recorded_at": "2026-01-05T09:00:00Z",
+        "text": "The discharge list is archived and is linked to the medication reconciliation record for this encounter.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-05-rehab-1",
+        "kind": "rehab",
+        "version": 1,
+        "recorded_at": "2026-01-05T09:00:00Z",
+        "text": "The handoff team has recorded the rehabilitation plan for review.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-05-follow_up-1",
+        "kind": "follow_up",
+        "version": 1,
+        "recorded_at": "2026-01-05T09:00:00Z",
+        "text": "The appointment record is archived. After clinician sign-off, the caregiver may be informed of the follow-up scheduling channel.",
+        "supersedes": null
+      }
+    ]
+  },
+  {
+    "case_id": "SYN-DEMO-06",
+    "title": "Imaging report with an accepted revision",
+    "as_of": "2026-01-06T12:00:00Z",
+    "required_kinds": [
+      "imaging",
+      "medications",
+      "rehab",
+      "follow_up"
+    ],
+    "handoff_confirmed": true,
+    "records": [
+      {
+        "id": "SYN-DEMO-06-imaging-1",
+        "kind": "imaging",
+        "version": 1,
+        "recorded_at": "2026-01-06T09:00:00Z",
+        "text": "The imaging report for this encounter is archived. Its date and version can be recorded during handoff.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-06-medications-1",
+        "kind": "medications",
+        "version": 1,
+        "recorded_at": "2026-01-06T09:00:00Z",
+        "text": "The discharge list is archived and is linked to the medication reconciliation record for this encounter.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-06-rehab-1",
+        "kind": "rehab",
+        "version": 1,
+        "recorded_at": "2026-01-06T09:00:00Z",
+        "text": "The handoff team has recorded the rehabilitation plan for review.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-06-follow_up-1",
+        "kind": "follow_up",
+        "version": 1,
+        "recorded_at": "2026-01-06T09:00:00Z",
+        "text": "The first follow-up has been recorded. The scheduling team will confirm the appointment time.",
+        "supersedes": null
+      },
+      {
+        "id": "SYN-DEMO-06-imaging-2",
+        "kind": "imaging",
+        "version": 2,
+        "recorded_at": "2026-01-06T10:30:00Z",
+        "text": "The imaging department issued an amended report correcting the timestamp in its header.",
+        "supersedes": "SYN-DEMO-06-imaging-1"
+      }
+    ]
+  }
+]

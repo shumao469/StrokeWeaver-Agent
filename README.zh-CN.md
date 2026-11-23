@@ -1,9 +1,10 @@
 # StrokeWeaver Agent
 
-StrokeWeaver 是面向卒中影像科研的工作台。两个版本的演示共用一个 Streamlit 入口，可在侧栏切换。
+StrokeWeaver 是面向卒中影像科研的工作台。三个版本的演示共用一个 Streamlit 入口，可在侧栏切换。
 
 - **Run a generated workflow** 运行固定合成输入的原生空间核验、条件修复和共享策略对照，检查 NIfTI 输入契约并导出审计。
 - **Replay audited evidence** 回放正常完成、证据失效转交及中断恢复三条已审计轨迹，查看分阶段耗时、人工转交和 MCP 核验记录，下载证据报告。
+- **3.0 · Handoff dialogue** 通过合成病例体验医生和患者对话、证据溯源、签署状态变更以及交接复核。可在本地配置模型服务，未配置时使用确定性回退。
 
 [打开线上工作台](https://strokeweaver-agent.streamlit.app/) · [许可说明](LICENSE_STATUS.md) · [安全与研究范围](SECURITY.md)
 

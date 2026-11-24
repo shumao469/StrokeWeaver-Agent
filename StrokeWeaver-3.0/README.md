@@ -34,6 +34,8 @@ The included rules provide a grounded dialogue experience at startup. A verified
 
 The workbench keeps a separate conversation and case state for each selected workflow and case within the Streamlit session. A change of the patient plan resets the displayed patient dialogue so that the next view follows the new plan status.
 
+The clinician can ask for multiple record categories in one turn, follow up on the source or recorded date, and request an identified record or a before-and-after comparison. The workbench resolves these questions against the case records and cites the available sources. The local model selects among bounded categories and tools, while the displayed evidence comes from the case. Patient questions are checked against the active signed plan and routed for review when the request calls for a clinician.
+
 ## Review the other scenarios
 
 | Synthetic case | What to explore |

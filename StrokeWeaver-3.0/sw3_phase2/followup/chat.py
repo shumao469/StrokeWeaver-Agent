@@ -5,11 +5,12 @@ import json
 from os import environ
 from pathlib import Path
 import re
+from threading import RLock
 from time import perf_counter
 from urllib.error import URLError
 from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
 
-from sw3_phase2.core import Episode, KINDS, TOPIC_WORDS
+from sw3_phase2.core import Episode, KINDS, has_term, requested_topics
 
 
 class ModelUnavailable(RuntimeError):
@@ -151,15 +152,30 @@ _RETRIEVAL_GUIDE = (
     "review_status. Doctor asks to find a source: choose a supplied inspect_record:<ID> option. "
     "If explicit_id is present, inspect that ID. Return only the specified JSON. The host renders the evidence."
 )
-_SEARCH_WORDS = ("找到", "找一下", "查找", "定位", "哪条", "哪份", "来源", "原文", "出处", "find", "source", "record", "locate", "lookup", "look up", "original")
+_INTENT_GUIDE = (
+    "For this synthetic handoff, choose the one clearly requested document category. "
+    "route_imaging is for MRI, scan, radiology or imaging. route_medications is for medicines, pharmacy or "
+    "discharge medications. route_rehab is for rehabilitation, therapy or mobility services. "
+    "route_follow_up is for follow-up, appointment or scheduling records. route_review is for the entire "
+    "handoff or open review issues. If the question is unrelated, asks for advice, or is ambiguous, choose "
+    "route_clarify. Never answer the question; choose only an option."
+)
+_SEARCH_WORDS = ("找到", "找一下", "查找", "定位", "哪条", "哪份", "来源", "原文", "出处", "find", "source", "record", "locate", "lookup", "look up", "original", "which", "when", "dated")
 _REVIEW_WORDS = ("需要核对", "需要补录", "裁定", "核对现有交接", "确认当前版本", "待复核", "needs review", "need review", "review the", "handoff status")
+_ROUTE_ANCHORS = {
+    "route_imaging": ("radiographer", "radiologist", "scanner", "neuroimaging", "neuroradiologist"),
+    "route_medications": ("pharmacist", "prescriber", "dispensing", "medication reconciliation"),
+    "route_rehab": ("physiotherapist", "therapist", "occupational therapist", "mobility services"),
+    "route_follow_up": ("scheduling team", "followup team", "outpatient clinic", "booking office"),
+    "route_review": ("handover", "discharge packet", "open issues", "pending issues"),
+}
 _OUTSIDE_SCOPE = ("院外", "聊天群", "发给", "发送", "转发", "私聊", "发布", "自行停", "自行改", "诊断我", "处方",
                   "替我签", "帮我签", "签署交接", "代签", "代替医生", "替医生", "标记完成", "send to", "forward to", "external", "diagnose",
                   "prescribe", "publish", "sign on behalf")
 
 
 def _focus(query):
-    return next((kind for kind, terms in TOPIC_WORDS.items() if any(term in query for term in terms)), None)
+    return next(iter(requested_topics(query)), None)
 
 
 def _relevance(row, query, kind):
@@ -176,11 +192,36 @@ class NavigationPolicy:
         self._episode = Episode(case)
         self._model = model
         self._active_source = {}
+        self._lock = RLock()
 
     def __getattr__(self, name):
         return getattr(self._episode, name)
 
     def chat(self, role, message):
+        with self._lock:
+            return self._chat(role, message)
+
+    def approve(self, expected_sha256):
+        with self._lock:
+            return self._episode.approve(expected_sha256)
+
+    def apply_update(self):
+        with self._lock:
+            return self._episode.apply_update()
+
+    def acknowledge_handoff(self):
+        with self._lock:
+            return self._episode.acknowledge_handoff()
+
+    def resolve_conflict(self, kind, record_id, expected_sha256):
+        with self._lock:
+            return self._episode.resolve_conflict(kind, record_id, expected_sha256)
+
+    def acknowledge_referral(self, referral_id):
+        with self._lock:
+            return self._episode.acknowledge_referral(referral_id)
+
+    def _chat(self, role, message):
         if role not in {"doctor", "patient"} or not isinstance(message, str) or not 0 < len(message.strip()) <= 1000:
             raise ValueError("Choose a role and enter a synthetic case question of 1–1000 characters.")
         receipt = {"model_calls": 0, "tool_calls": 0, "model_wall_seconds": 0.0,
@@ -199,13 +240,91 @@ class NavigationPolicy:
             return {**guarded, **receipt}
 
         timeline = state["timeline"]
-        exact = next((row["id"] for row in timeline if row["id"].casefold() in query), None)
+        topics = requested_topics(query)
+        available_sources = {row["id"].casefold(): row["id"] for row in timeline}
+        raw_tokens = re.findall(r"(?<![a-z0-9._-])[a-z0-9][a-z0-9._-]*", query)
+        tokens = [token if token in available_sources else token.rstrip(".,") for token in raw_tokens]
+        unknown_source = any(
+            token not in available_sources and (
+                token.startswith("syn-") or any(
+                    len(source) >= 5 and any(char in source for char in "-_.") and token.startswith(source)
+                    for source in available_sources
+                )
+            ) for token in tokens
+        )
+        if role == "doctor" and unknown_source:
+            result = self._episode._reply(role, "CLARIFY", "That source is not available in the current case timeline.")
+            return {**result, **receipt}
+        if role == "doctor" and len(topics) > 1:
+            # A single-record tool choice would discard requested categories.
+            return {**guarded, **receipt}
+
+        if role == "doctor" and any(phrase in query for phrase in ("what changed", "what has changed", "what was updated", "show changes", "compare versions")):
+            candidates = [row for row in state["current"] if row["supersedes"] and (not topics or row["kind"] in topics)]
+            records = {row["id"]: row for row in timeline}
+            if not candidates:
+                result = self._episode._reply(role, "ANSWER", "No replacement record is available in the current case timeline.")
+                return {**result, **receipt}
+            lines = []
+            citations = []
+            for current in candidates:
+                prior = records[current["supersedes"]]
+                lines.append(f"{KINDS[current['kind']]} · previous v{prior['version']} ({prior['recorded_at']}): {prior['text']}")
+                lines.append(f"{KINDS[current['kind']]} · current v{current['version']} ({current['recorded_at']}): {current['text']}")
+                citations.extend((prior["id"], current["id"]))
+            result = self._episode._reply(role, "ANSWER", "\n".join(lines), citations)
+            return {**result, **receipt}
+
+        exact = next((available_sources[token] for token in tokens if token in available_sources), None) if role == "doctor" else None
         last = self._active_source.get(role)
-        if not exact and any(term in query for term in ("它的", "这条", "这份", "that record", "its source", "its original", "this record")):
+        if not exact and any(has_term(query, term) for term in ("它的", "这条", "这份", "that record", "its source", "its original", "this record", "this one", "it", "its")):
             if last and last[0] == state["snapshot_sha256"]:
                 exact = last[1]
         focus = _focus(query)
-        doctor_search = bool(exact or any(word in query for word in _SEARCH_WORDS))
+        doctor_search = bool(exact or any(has_term(query, word) for word in _SEARCH_WORDS))
+        if role == "doctor":
+            date_match = re.search(r"\b\d{4}-\d{2}-\d{2}\b", query)
+            if date_match and not exact:
+                matching = [row for row in timeline if row["recorded_at"].startswith(date_match.group()) and (not focus or row["kind"] == focus)]
+                if len(matching) == 1:
+                    exact = matching[0]["id"]
+                    doctor_search = True
+                else:
+                    reply = "No source matches that date and category." if not matching else "Several records match that date. Please specify a category or source ID."
+                    result = self._episode._reply(role, "CLARIFY", reply)
+                    return {**result, **receipt}
+            if guarded["action"] == "CLARIFY" and not exact and not date_match and not topics:
+                routes = {
+                    "route_imaging": ("Imaging", "Show the imaging records."),
+                    "route_medications": ("Medication", "Show the medication records."),
+                    "route_rehab": ("Rehabilitation", "Show the rehabilitation records."),
+                    "route_follow_up": ("Follow-up", "Show the follow-up records."),
+                    "route_review": ("Handoff", "Summarize the handoff status."),
+                }
+                allowed_routes = [name for name, anchors in _ROUTE_ANCHORS.items()
+                                  if any(has_term(query, anchor) for anchor in anchors)]
+                if not allowed_routes:
+                    return {**guarded, **receipt}
+                if len(allowed_routes) > 1:
+                    queries = " ".join(routes[name][1] for name in allowed_routes)
+                    result = self._episode.chat(role, queries)
+                    return {**result, **receipt}
+                route_context = {"role": role, "mode": "route_intent", "question": message, "records": []}
+                route = self._select(route_context, [*allowed_routes, "route_clarify"], [], receipt, guide=_INTENT_GUIDE)
+                if self._episode.state()["snapshot_sha256"] != state["snapshot_sha256"]:
+                    receipt["failure"] = "context_changed_before_tool"
+                    return {**self._episode.chat(role, message), **receipt}
+                if route is not None and route[0] in routes:
+                    category, query_text = routes[route[0]]
+                    result = self._episode.chat(role, query_text)
+                    receipt["tool_calls"] = 1
+                    receipt["tool_trace"].append({"tool": route[0], "record_id": None,
+                                                  "snapshot_sha256": state["snapshot_sha256"]})
+                    if len(result["citations"]) == 1:
+                        self._active_source[role] = (state["snapshot_sha256"], result["citations"][0])
+                    result["text"] = f"Matching {category.lower()} records:\n{result['text']}"
+                    return {**result, **receipt}
+                return {**guarded, **receipt}
         if role == "doctor" and doctor_search and focus and not exact and ("有效" in query or "current" in query or "valid" in query) and not any(
             row["kind"] == focus for row in state["current"]
         ):
@@ -218,17 +337,31 @@ class NavigationPolicy:
             calls = ["review_status"]
             if rows and doctor_search:
                 calls = ["inspect_record", "review_status"]
+            if exact:
+                rows = [row for row in rows if row["id"] == exact]
+                calls = ["inspect_record"]
+            elif self._navigator and focus and doctor_search:
+                rows = [row for row in rows if row["kind"] == focus]
+                if any(has_term(query, word) for word in ("current", "valid", "latest", "有效", "当前")):
+                    active_ids = {row["id"] for row in state["current"] if row["kind"] == focus}
+                    rows = [row for row in rows if row["id"] in active_ids]
         context = {"role": role, "mode": "find_source" if doctor_search and role == "doctor" else "review",
                    "question": message, "explicit_id": exact if role == "doctor" else None,
                    "focus": focus, "records": self._model_records(rows, state)}
         selection = self._select(context, calls, rows, receipt)
-        if selection is None:
-            return {**guarded, **receipt}
         if self._episode.state()["snapshot_sha256"] != state["snapshot_sha256"]:
             receipt["failure"] = "context_changed_before_tool"
-            fresh = self._episode.chat(role, message)
-            return {**fresh, **receipt}
-
+            return {**self._episode.chat(role, message), **receipt}
+        if selection is None:
+            if role == "doctor" and exact and rows:
+                self._active_source[role] = (state["snapshot_sha256"], exact)
+                result = self._read_record(rows[0], state)
+                return {**self._episode._reply(role, result["action"], result["text"], result["citations"]), **receipt}
+            if role == "doctor" and len(guarded["citations"]) == 1:
+                source_id = guarded["citations"][0]
+                if any(row["id"] == source_id for row in timeline):
+                    self._active_source[role] = (state["snapshot_sha256"], source_id)
+            return {**guarded, **receipt}
         name, source_id = selection
         receipt["tool_calls"] = 1
         receipt["tool_trace"].append({"tool": name, "record_id": source_id or None,
@@ -236,7 +369,12 @@ class NavigationPolicy:
         if name == "inspect_record":
             resolved = next(row for row in rows if row["id"] == source_id)
             self._active_source[role] = (state["snapshot_sha256"], source_id)
-            return {**self._read_record(resolved, state), **receipt}
+            result = self._read_record(resolved, state)
+            return {**self._episode._reply(role, result["action"], result["text"], result["citations"]), **receipt}
+        if role == "doctor" and len(guarded["citations"]) == 1:
+            source_id = guarded["citations"][0]
+            if any(row["id"] == source_id for row in timeline):
+                self._active_source[role] = (state["snapshot_sha256"], source_id)
         return {**guarded, **receipt}
 
     def _bounded_records(self, timeline, current, query, focus, exact):
@@ -257,9 +395,9 @@ class NavigationPolicy:
                 record["current"] = record["id"] in current
         return records
 
-    def _select(self, context, calls, rows, receipt):
+    def _select(self, context, calls, rows, receipt, *, guide=None):
         ids = [row["id"] for row in rows] if "inspect_record" in calls else []
-        guide = _NAVIGATOR_GUIDE if self._navigator else _RETRIEVAL_GUIDE
+        guide = guide or (_NAVIGATOR_GUIDE if self._navigator else _RETRIEVAL_GUIDE)
         for attempt in range(2):
             receipt["model_calls"] += 1
             started = perf_counter()

@@ -4,9 +4,9 @@ StrokeWeaver is a research workbench for auditable stroke-imaging workflows. One
 
 | Workbench view | What you can do |
 | --- | --- |
+| **3.0 · Handoff dialogue** | Explore synthetic doctor and patient dialogues, source navigation, a versioned plan, review and handoff records, and a local timing exercise. |
 | **1.0 · Generated workflow** | Run native-space quality checks and conditional repair on fixed generated inputs, compare shared policies, inspect NIfTI input checks, and export audit reports. |
 | **2.0 · Evidence replay** | Inspect archived traces for standard completion, referral after evidence became stale, and interrupted-run recovery. Review the recorded timing, handoff and MCP qualification, or download the evidence report. |
-| **3.0 · Handoff dialogue** | Explore synthetic doctor and patient dialogues, source navigation, a versioned plan, review and handoff records, and a local timing exercise. |
 
 [Open the hosted workbench](https://strokeweaver-agent.streamlit.app/) · [中文说明](README.zh-CN.md) · [Licensing status](LICENSE_STATUS.md) · [Security and research boundaries](SECURITY.md)
 
@@ -30,6 +30,8 @@ The doctor and patient roles simulate interactions within one local session. The
 ## Deploy on Streamlit Community Cloud
 
 Use repository `shumao469/StrokeWeaver-Agent`, branch `main`, and main file `streamlit_app.py`. Community Cloud installs the root `requirements.txt`. The public workbench does not require secrets, model weights or a GPU.
+
+The hosted 3.0 view uses its deterministic evidence pathway when no verified model service is configured in the hosted environment. A locally configured model service is available to a locally run workbench. The separate synthetic study instrument and its assessment materials are maintained locally.
 
 The versioned directories retain their standalone commands and verification instructions. See [StrokeWeaver 1.0](StrokeWeaver-1.0/README.md), [StrokeWeaver 2.0](StrokeWeaver-2.0/README.md), and [StrokeWeaver 3.0](StrokeWeaver-3.0/README.md) for details.
 

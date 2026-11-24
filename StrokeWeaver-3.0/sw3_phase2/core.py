@@ -15,20 +15,46 @@ KINDS = {
     "follow_up": "Follow-up plan",
 }
 TOPIC_WORDS = {
-    "imaging": ("影像", "影象", "磁共振", "报告", "mri", "imaging", "image", "scan", "radiology", "report"),
-    "medications": ("用药", "药物", "药品", "药单", "medication", "medicine", "medications", "medicines", "drug"),
-    "rehab": ("康复", "训练", "rehab", "rehabilitation"),
-    "follow_up": ("随访", "复诊", "预约", "门诊", "follow-up", "follow up", "followup", "appointment", "visit"),
+    "imaging": ("影像", "影象", "磁共振", "报告", "mri", "dwi", "adc", "imaging", "image", "scan", "radiology", "radiological", "report"),
+    "medications": ("用药", "药物", "药品", "药单", "medication", "medicine", "medications", "medicines", "drug", "pharmacy", "prescription", "pill"),
+    "rehab": ("康复", "训练", "rehab", "rehabilitation", "physical therapy", "physiotherapy", "occupational therapy"),
+    "follow_up": ("随访", "复诊", "预约", "门诊", "follow-up", "follow up", "followup", "appointment", "visit", "outpatient", "clinic"),
 }
-CONTEXT_WORDS = ("它", "这个", "这项", "来源", "出处", "原文", "哪份", "时间", "何时", "几点", "什么时候", "when", "source", "its", "that", "original", "where")
+CONTEXT_WORDS = ("它", "这个", "这项", "来源", "出处", "原文", "哪份", "时间", "何时", "几点", "什么时候", "when", "source", "its", "it", "that", "original", "where", "those", "these", "this record", "this one")
 NEW_CONCERN_WORDS = (
     "突然", "新出现", "新发", "加重", "急诊", "紧急", "晕倒", "胸痛", "麻木", "无力", "嘴歪",
     "说不清", "眩晕", "头痛", "出血", "停药", "换药", "改药", "调药", "剂量", "加量", "减量",
     "漏服", "补服", "副作用", "怎么办", "能吃吗", "要吃吗", "该不该", "可以吃", "是否吃",
-    "emergency", "dose", "symptom", "stop taking", "side effect", "sudden", "worsening", "new weakness", "new numbness", "missed dose", "change my medication", "shortness of breath", "chest pain",
+    "emergency", "dose", "symptom", "stop taking", "side effect", "sudden", "worsening", "new weakness", "new numbness", "missed dose", "change my medication", "shortness of breath", "chest pain", "should i", "should we", "is it safe", "is this safe", "safe to", "what should i do", "how much should", "can i take", "diagnose", "treatment advice",
+)
+# These requests seek clinical assessment or a medication decision. The
+# synthetic patient assistant routes them to the review queue before reading
+# or displaying any signed-plan section.
+CLINICAL_REQUEST = re.compile(
+    r"\b(?:allerg(?:y|ies|ic|en)|anaphylaxis|reaction|contraindicat\w*|"
+    r"skip(?:s|ped|ping)?|omit(?:s|ted|ting)?|miss(?:ed|ing)?|"
+    r"headaches?|pain|aches?|dizz\w*|vertigo|nausea|vomit\w*|"
+    r"numb\w*|weakness|weak|paralys\w*|bleed\w*|fever|swelling|"
+    r"breathless\w*|confusion|confused|falling|fainted|"
+    r"choking|rash|hives|seizure\w*)\b"
+    r"|\b(?:cannot|can't|unable to|can not)\s+(?:feel|move|speak|breathe|swallow|walk|see)\b"
+    r"|\b(?:can|could|may|should)\s+(?:i|we)\s+(?:take|use|skip|stop|change|increase|decrease)\b"
+    r"|\b(?:can|could|will|would)\s+(?:this|that|it|the\s+medication|my\s+medication)\s+(?:help|treat|relieve|cure|work)\b",
+    re.IGNORECASE,
 )
 ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}\Z")
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
+
+
+def has_term(query, term):
+    """Match English words at boundaries and retain substring matching for Chinese."""
+    if term.isascii():
+        return bool(re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", query))
+    return term in query
+
+
+def requested_topics(query):
+    return tuple(kind for kind, words in TOPIC_WORDS.items() if any(has_term(query, word) for word in words))
 
 
 def digest(value):
@@ -286,13 +312,13 @@ class Episode:
         if role not in {"doctor", "patient"} or not isinstance(message, str) or not 0 < len(message.strip()) <= 1000:
             raise ValueError("Choose a role and enter a synthetic case question of 1–1000 characters.")
         query = message.strip().casefold()
-        requested = tuple(kind for kind, words in TOPIC_WORDS.items() if any(word in query for word in words))
-        if role == "patient" and any(word in query for word in NEW_CONCERN_WORDS):
+        requested = requested_topics(query)
+        if role == "patient" and (CLINICAL_REQUEST.search(query) or any(word in query for word in NEW_CONCERN_WORDS)):
             message = self._refer(
                 "CLINICAL_QUESTION", "This question requires a clinician and has been added to the demonstration review queue. For real health concerns, contact a healthcare professional.", requested
             )
             return self._reply(role, "REFER", message)
-        if not requested and any(word in query for word in CONTEXT_WORDS):
+        if not requested and any(has_term(query, word) for word in CONTEXT_WORDS):
             requested = self._topics.get(role, ())
         view = self.state()
         if role == "patient":
@@ -309,7 +335,14 @@ class Episode:
                 message = self._refer("TOPIC_NOT_SIGNED", "The signed plan does not contain this item. It has been added to the demonstration review queue.", requested)
                 return self._reply(role, "REFER", message)
             self._topics[role] = tuple(row["kind"] for row in rows)
-            return self._reply(role, "ANSWER", "\n".join(f"{KINDS[row['kind']]}: {row['text']}" for row in rows),
+            records = {row["id"]: row for row in view["timeline"]}
+            show_metadata = any(has_term(query, word) for word in ("when", "date", "time", "version", "source", "recorded", "timestamp", "来源", "时间", "何时"))
+            def format_section(row):
+                record = records.get(row["source_id"])
+                if show_metadata and record:
+                    return f"{KINDS[row['kind']]} · v{record['version']} · recorded {record['recorded_at']}: {row['text']}"
+                return f"{KINDS[row['kind']]}: {row['text']}"
+            return self._reply(role, "ANSWER", "\n".join(format_section(row) for row in rows),
                                [row["source_id"] for row in rows])
         if not requested and not any(word in query for word in (
             "交接", "出院", "清单", "汇总", "摘要", "冲突", "缺失", "待办", "复核", "timeline", "summary", "checklist", "handoff", "discharge", "review", "conflict", "missing", "status", "summarize"

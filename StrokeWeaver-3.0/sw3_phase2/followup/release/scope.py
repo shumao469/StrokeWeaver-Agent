@@ -22,13 +22,14 @@ _SHARE = re.compile(
 
 class WorkbenchNavigationPolicy(NavigationPolicy):
     def chat(self, role, message):
-        if role == "patient" and isinstance(message, str) and 0 < len(message.strip()) <= 1000 and (
-            _CHANGE_PLAN.search(message) or _SHARE.search(message)
-        ):
-            episode = self._episode
-            notice = episode._refer(
-                "OUTSIDE_SCOPE", "The request to change or share the plan has been sent for simulated clinician review.", ()
-            )
-            return {**episode._reply(role, "REFER", notice), "model_calls": 0, "tool_calls": 0,
-                    "model_wall_seconds": 0.0, "recovery_attempts": 0, "failure": None, "tool_trace": []}
-        return super().chat(role, message)
+        with self._lock:
+            if role == "patient" and isinstance(message, str) and 0 < len(message.strip()) <= 1000 and (
+                _CHANGE_PLAN.search(message) or _SHARE.search(message)
+            ):
+                episode = self._episode
+                notice = episode._refer(
+                    "OUTSIDE_SCOPE", "The request to change or share the plan has been sent for simulated clinician review.", ()
+                )
+                return {**episode._reply(role, "REFER", notice), "model_calls": 0, "tool_calls": 0,
+                        "model_wall_seconds": 0.0, "recovery_attempts": 0, "failure": None, "tool_trace": []}
+            return super().chat(role, message)

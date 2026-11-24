@@ -1,6 +1,6 @@
 # StrokeWeaver Agent
 
-StrokeWeaver is a research workbench for auditable stroke-imaging workflows. One Streamlit app brings three releases into a single interface.
+StrokeWeaver is a research workbench for auditable stroke-imaging workflows. (https://strokeweaver-agent.streamlit.app/)
 
 | Workbench view | What you can do |
 | --- | --- |
@@ -21,7 +21,7 @@ python -m streamlit run streamlit_app.py --server.address 127.0.0.1
 
 Open `http://127.0.0.1:8501/` and choose a version in the sidebar. The generated workflow performs fresh technical checks. The replay view verifies and displays archived evidence without rerunning the original model. The 3.0 interface uses generated demonstration cases and makes available a deterministic fallback when a local model is not configured.
 
-## Optional local model for 3.0
+## Optional local model
 
 The dialogue workbench can call a locally operated llama.cpp server over loopback. Set `STROKEWEAVER_LLM_MODEL`, `STROKEWEAVER_LLM_WEIGHTS`, `STROKEWEAVER_LLM_WEIGHTS_SHA256`, `STROKEWEAVER_LLM_BINARY`, and `STROKEWEAVER_LLM_BINARY_SHA256` to your own model and runtime paths and verified SHA-256 values. The default port is `18788` and can be changed with `STROKEWEAVER_LLM_PORT`. Model selection is confined to read-only actions; the interface records model unavailability and uses the existing rule-based pathway.
 
